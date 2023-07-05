@@ -1,0 +1,36 @@
+---
+version: '2.0'
+services:
+  gpu-diffusion:
+    image: sxk1633/automatic:v1
+    expose:
+      - port: 9999
+        as: 80
+        to:
+          - global: true
+profiles:
+  compute:
+    gpu-diffusion:
+      resources:
+        cpu:
+          units: 1
+        memory:
+          size: 16Gi
+        gpu:
+          units: 1
+          attributes:
+            vendor:
+              nvidia:
+        storage:
+          - size: 27Gi
+  placement:
+    westcoast:
+      pricing:
+        gpu-diffusion:
+          denom: uakt
+          amount: 100000
+deployment:
+  gpu-diffusion:
+    westcoast:
+      profile: gpu-diffusion
+      count: 1
